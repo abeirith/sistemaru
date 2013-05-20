@@ -1,0 +1,42 @@
+/* 
+    Document   : style
+    Created on : May 20, 2013, 7:33:54 PM
+    Author     : beirith
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+body { 
+    background: url(../img/restaurante.jpg);
+}
+
+#content{
+    margin:0 auto;
+    width:900px;
+}
+
+#mask{
+    width:900px;
+    height:600px;
+    margin: 0 auto;
+    position:absolute;
+    background: #fff;
+    opacity:0.6;
+    z-index: 1;
+}
+
+#main {
+    text-align: center;
+    margin: 0 auto;
+    width:900px;
+    height:600px;
+    background: transparent;
+    position:absolute;
+    z-index: 2;
+}
+
+#box{
+    margin: auto;
+    width: 400px;
+    text-align: left;
+}
