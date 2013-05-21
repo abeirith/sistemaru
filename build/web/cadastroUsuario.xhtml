@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <head>
+        <title>Compra de passes do RU</title>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+    </head>
+    <body>
+        <div id="content">
+            <div id="mask"></div>
+
+            <div id="main">
+                <h1>Compra de passes do Restaurante Universitário</h1>      
+                <br /><br /><br />
+                <div id="box">
+                    <h:form id="formLogin" prependId="false">
+                        <h:messages/>
+                        <div class="form">
+                            <p>
+                                <h:outputLabel value="Nome Usuario" />
+                                <h:inputText id="usuario" label="Usuário" value="#{loginBean.usuario.login}"  required="true" requiredMessage="Preencha o campo de login" class="field size1" style=" width: 96%;" />
+                            </p>
+                            <p>
+                                <h:outputLabel value="Senha" />
+                                <h:inputSecret id="senha" label="Password" value="#{loginBean.usuario.senha}" required="true" requiredMessage="Preencha o campo de senha" class="field size1" style=" width: 96%;" />
+                            </p>
+
+                        </div>
+
+
+                        <div class="buttons">
+                            <h:commandButton id="cadastrar" value="Ok" action="#{loginBean.cadastrarUsuario()}" />
+                        </div>
+                    </h:form>
+                    <h:form>
+                            <h:commandLink id="voltar" value="Voltar" action="login" />
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
