@@ -1,16 +1,15 @@
 package br.com.beans;
 
-import br.com.entidade.ListaUsuarios;
+import br.com.dao.UsuarioDAO;
 import br.com.entidade.Usuario;
-import br.com.persistencia.Persistencia;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import javax.naming.AuthenticationException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /*
  * To change this template, choose Tools | Templates
@@ -25,7 +24,8 @@ import javax.naming.AuthenticationException;
 public class LoginBean {
 
     private Usuario usuario;
-    
+    @Inject
+    private UsuarioDAO usuarioDAO;
     private String login;
 
     public String getLogin() {
@@ -35,15 +35,12 @@ public class LoginBean {
     public void setLogin(String login) {
         this.login = login;
     }
-    
-    @Inject
-    Persistencia persistencia;
 
     public LoginBean() {
     }
 
     public Usuario getUsuario() {
-        if(usuario == null){
+        if (usuario == null) {
             usuario = new Usuario();
         }
         return usuario;
@@ -53,30 +50,42 @@ public class LoginBean {
         this.usuario = usuario;
     }
 
- 
-    public String checkLogin() {
-        ArrayList<Usuario> usuarios = persistencia.abrirArquivo("C:\\DSO\\usuarios.txt");
-        for (Iterator<Usuario> it = usuarios.iterator(); it.hasNext();) {
-            Usuario usuarioCadastrado = it.next();
-            if ((usuarioCadastrado.getLogin().equals(getUsuario().getLogin()) && (usuarioCadastrado.getSenha().equals(getUsuario().getSenha())))) {
+    public String checkLogin() throws Exception {
+        
+        if (getUsuario() != null) {
+            Usuario usuarioRegistrado = usuarioDAO.buscarUsuario(getUsuario());
+            if (usuarioRegistrado != null && usuarioRegistrado.getSenha().equals(getUsuario().getSenha())) {
+               HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);  
+               session.setAttribute("logado", true);  
                 return "/index";
             }
         }
-        return "/login";
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Login ou senha inexistente"));
+
+        return "";
     }
 
     public String cadastrarUsuario() throws Exception {
-         ListaUsuarios lista = null;
-         lista.setUsuarios(persistencia.abrirArquivo("C:\\DSO\\usuarios.txt"));
-                 
-                 
-        if (getUsuario() != null && getUsuario().getLogin() != null && getUsuario().getSenha() != null) {
-            lista.getUsuarios().add(getUsuario());
-            persistencia.registrarEmArquivo(lista.getUsuarios());
-            return "/login";
-        } else {
-            throw new Exception("Impossivel cadastrar");
+
+
+        List<Usuario> usuarios = usuarioDAO.listarUsuarios();
+
+        for (Usuario usuario : usuarios) {
+            System.out.print("teste " + usuario.getLogin() + " - " + usuario.getSenha());
         }
 
+        if (getUsuario() != null) {
+            usuarioDAO.inserir(getUsuario());
+        }
+
+        return "/login";
+
+    }
+
+    public String doLogout() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        HttpSession httpSession = (HttpSession) facesContext.getExternalContext().getSession(false);
+        httpSession.invalidate();
+        return "/login?faces-redirect=true";
     }
 }
